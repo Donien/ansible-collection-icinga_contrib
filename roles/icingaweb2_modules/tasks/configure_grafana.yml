@@ -61,7 +61,7 @@
 - name: Deploy graphs.ini
   become: true
   vars:
-    _graphs: "{{ _module.graphs | default({}) | dict2items }}"
+    _graphs: "{{ _module.config.graphs | default({}) | dict2items }}"
   when: _graphs
   ansible.builtin.template:
     src: "{{ role_path }}/templates/grafana/graphs.ini.j2"
