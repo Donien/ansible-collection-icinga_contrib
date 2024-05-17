@@ -69,6 +69,11 @@ Table of contents:
   - `import_dashboards`: `boolean`  
     Whether to import the dashboards provided by the module into your Grafana server.  
     Default: `false`
+  - `import_graphs_ini`: `boolean`  
+    Whether to import all \*.ini files within the `local_dashboards` directory to be part of **graphs.ini**.  
+    With this you can provide parts of graphs.ini without having to convert existing \*.ini files to YAML.  
+    `config.graphs` **takes precedence** over the \*.ini files when redefining the same section.  
+    Default: `false`
   - `config.grafana`: `dictionary`  
     Manages *config.ini* to configure the module. Its keys are equal to the modules [configuration file](https://github.com/Mikesch-mp/icingaweb2-module-grafana/blob/master/doc/03-module-configuration.md#example-configini-etcicingaweb2modulesgrafanaconfigini), though not necessarily complete yet.  
     For possible default values have look at [templates/grafana/config.ini.j2](templates/grafana/config.ini.j2).

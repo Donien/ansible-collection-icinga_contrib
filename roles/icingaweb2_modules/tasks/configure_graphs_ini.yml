@@ -1,0 +1,20 @@
+---
+
+- name: Find all local .ini files
+  run_once: true
+  ansible.builtin.set_fact:
+    _local_graphs_ini: "{{ lookup('ansible.builtin.fileglob', icingaweb2_modules.grafana.local_dashboards + '/*.ini', wantlist=true) }}"
+
+- name: Read contents of local graphs.ini files
+  run_once: true
+  delegate_to: localhost
+  loop: "{{ _local_graphs_ini }}"
+  ansible.builtin.slurp:
+    src: "{{ item }}"
+  register: "_local_graphs_ini_contents"
+
+- name: Combine all .ini files into a dictionary
+  run_once: true
+  loop: "{{ _local_graphs_ini_contents.results }}"
+  set_fact:
+    _all_graphs_ini: "{{ _all_graphs_ini | default({}) | combine(item.content | b64decode | replace('\"', '') | community.general.from_ini) }}"
