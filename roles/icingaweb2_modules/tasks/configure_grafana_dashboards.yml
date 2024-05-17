@@ -17,9 +17,9 @@
 
 - name: Find all local dashboards
   run_once: true
-  when: icingaweb2_modules.grafana.local_dasbhoards is defined
+  when: icingaweb2_modules.grafana.local_dashboards is defined
   ansible.builtin.set_fact:
-    _local_dashboards: "{{ lookup('ansible.builtin.fileglob', icingaweb2_modules.grafana.local_dasbhoards + '/*.json', wantlist=true) }}"
+    _local_dashboards: "{{ lookup('ansible.builtin.fileglob', icingaweb2_modules.grafana.local_dashboards + '/*.json', wantlist=true) }}"
 
 - name: Read local dashboard contents
   run_once: true
