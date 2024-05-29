@@ -1,0 +1,13 @@
+---
+
+- name: Deploy config.ini
+  become: true
+  vars:
+    _map: "{{ _module.config.map | default(omit) }}"
+    _director: "{{ _module.config.director | default(omit) }}"
+  ansible.builtin.template:
+    src: "{{ role_path }}/templates/map/config.ini.j2"
+    dest: "{{ icingaweb2_modules_config_path }}/modules/map/config.ini"
+    owner: "{{ _icingaweb2_modules_web2_user }}"
+    group: "{{ _icingaweb2_modules_web2_group }}"
+    mode: "0660"
