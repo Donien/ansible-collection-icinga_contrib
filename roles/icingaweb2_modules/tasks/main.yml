@@ -16,7 +16,7 @@
 - name: Install Icinga Web 2 Module
   when:
     - icingaweb2_modules is defined
-    - _current_module.key in _icingaweb2_modules_known_modules
+    - _current_module.key in (_icingaweb2_modules_known_modules | map(attribute='name'))
   loop: "{{ icingaweb2_modules | dict2items }}"
   loop_control:
     loop_var: _current_module
@@ -29,7 +29,7 @@
   become: true
   when:
     - icingaweb2_modules is defined
-    - _current_module.key in _icingaweb2_modules_known_modules
+    - _current_module.key in (_icingaweb2_modules_known_modules | map(attribute='name'))
     - _enabled != omit
   loop: "{{ icingaweb2_modules | dict2items }}"
   loop_control:
@@ -51,7 +51,7 @@
   become: true
   when:
     - icingaweb2_modules is defined
-    - _current_module.key in _icingaweb2_modules_known_modules
+    - _current_module.key in (_icingaweb2_modules_known_modules | map(attribute='name'))
   loop: "{{ icingaweb2_modules | dict2items }}"
   loop_control:
     loop_var: _current_module
@@ -65,10 +65,11 @@
 - name: Configure module
   when:
     - icingaweb2_modules is defined
-    - _current_module.key in _icingaweb2_modules_known_modules
+    - _current_module.key in (_icingaweb2_modules_known_modules | map(attribute='name'))
   loop: "{{ icingaweb2_modules | dict2items }}"
   loop_control:
     loop_var: _current_module
   vars:
     _module: "{{ icingaweb2_modules[_current_module.key] }}"
-  ansible.builtin.include_tasks: "{{ role_path }}/tasks/configure_{{ _current_module.key }}.yml"
+    _module_configure_tasks: "{{ lookup('ansible.builtin.first_found', role_path + '/tasks/configure_' + _current_module.key + '.yml', skip=True) | default(role_path + '/tasks/configure_default.yml', true) }}"
+  ansible.builtin.include_tasks: "{{ _module_configure_tasks }}"

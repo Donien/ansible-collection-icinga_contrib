@@ -34,7 +34,7 @@
       become: true
       when: _module.source | lower == "git"
       ansible.builtin.git:
-        repo: "{{ _module.url }}"
+        repo: "{{ _module.url | default((_icingaweb2_modules_known_modules | selectattr('name', 'eq', _current_module.key) | first).git_url) }}"
         dest: "{{ icingaweb2_modules_path }}/{{ _module_name }}"
         version: "{{ _module.version | default(omit) }}"
   rescue:
@@ -48,7 +48,7 @@
       become: true
       when: _module.source | lower == "git"
       ansible.builtin.git:
-        repo: "{{ _module.url }}"
+        repo: "{{ _module.url | default((_icingaweb2_modules_known_modules | selectattr('name', 'eq', _current_module.key) | first).git_url) }}"
         dest: "{{ icingaweb2_modules_path }}/{{ _module_name }}"
         version: "{{ _module.version | default(omit) }}"
 
