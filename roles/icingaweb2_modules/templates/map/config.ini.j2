@@ -1,0 +1,60 @@
+[map]
+{% set _stateType = "soft" %}
+{% set _cluster_problem_count = "0" %}
+{% set _popup_mouseover = "0" %}
+{% if _map.default_zoom is defined %}
+default_zoom = "{{ _map.default_zoom }}"
+{% endif %}
+stateType = "{{ _map.stateType | default(_stateType) }}"
+cluster_problem_count = "{{ _map.cluster_problem_count | default(_cluster_problem_count) }}"
+popup_mouseover = "{{ _map.popup_mouseover | default(_popup_mouseover) }}"
+{% if _map.default_lat is defined %}
+default_lat = "{{ _map.default_lat }}"
+{% endif %}
+{% if _map.default_long is defined %}
+default_long = "{{ _map.default_long }}"
+{% endif %}
+{% if _map.max_zoom is defined %}
+max_zoom = "{{ _map.max_zoom }}"
+{% endif %}
+{% if _map.max_native_zoom is defined %}
+max_native_zoom = "{{ _map.max_native_zoom }}"
+{% endif %}
+{% if _map.min_zoom is defined %}
+min_zoom = "{{ _map.min_zoom }}"
+{% endif %}
+{% if _map.tile_url is defined %}
+tile_url = "{{ _map.tile_url }}"
+{% endif %}
+{% if _map.opencage_apikey is defined %}
+opencage_apikey = "{{ _map.opencage_apikey }}"
+{% endif %}
+{% if _map.dashlet_height is defined %}
+dashlet_height = "{{ _map.dashlet_height }}"
+{% endif %}
+{% if _map.disable_cluster_at_zoom is defined %}
+disable_cluster_at_zoom = "{{ _map.disable_cluster_at_zoom }}"
+{% endif %}
+
+[director]
+{% if _director.default_lat is defined %}
+default_lat = "{{ _director.default_lat }}"
+{% endif %}
+{% if _director.default_long is defined %}
+default_long = "{{ _director.default_long }}"
+{% endif %}
+{% if _director.default_zoom is defined %}
+default_zoom = "{{ _director.default_zoom }}"
+{% endif %}
+{% if _director.max_zoom is defined %}
+max_zoom = "{{ _director.max_zoom }}"
+{% endif %}
+{% if _director.max_native_zoom is defined %}
+max_native_zoom = "{{ _director.max_native_zoom }}"
+{% endif %}
+{% if _director.min_zoom is defined %}
+min_zoom = "{{ _director.min_zoom }}"
+{% endif %}
+{% if _director.tile_url is defined %}
+tile_url = "{{ _director.tile_url }}"
+{% endif %}

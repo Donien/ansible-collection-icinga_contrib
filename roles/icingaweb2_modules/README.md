@@ -16,8 +16,12 @@ Table of contents:
 * [Variables](#variables)
   * [General](#general)
   * [Grafana](#grafana)
+  * [Map](#map)
+  * [Map Datatype](#map-datatype)
 * [Example Playbooks](#example-playbooks)
   * [Grafana Playbooks](#grafana-playbooks)
+  * [Map Playbooks](#map-playbooks)
+  * [Map Datatype Playbooks](#map-datatype-playbooks)
 
 # Variables
 
@@ -87,6 +91,21 @@ Table of contents:
 - `icingaweb2_modules_grafana_server_dashboard_path`: `string`  
   The path where imported dashboards should be deployed on your Grafana server.  
   Default: `/var/lib/grafana/dashboards/icingaweb2-grafana`
+
+## Map
+
+- `icingaweb2_modules.map`: `dictionary`  
+  - `config.map`: `dictionary`  
+    Manages the section `map` within *config.ini* to configure the module. Its keys are equal to the module's [settings](https://github.com/nbuchwitz/icingaweb2-module-map/blob/master/doc/03-Exploring-the-map.md#settings).  
+    For possible default values have look at [templates/map/config.ini.j2](templates/map/config.ini.j2).
+  - `config.director`: `dictionary`  
+    Manages the section `director` within *config.ini* to configure the module. It shares some keys with `config.map`.  
+    Have a look at [templates/map/config.ini.j2](templates/map/config.ini.j2).
+
+## Map Datatype
+
+- `icingaweb2_modules.mapDatatype`: `none`  
+  - No keys for this module.
 
 # Example Playbooks
 
@@ -182,4 +201,38 @@ Install grafana module via Git and configure connection to Grafana server. Also 
 
   roles:
     - netways.icinga_contrib.icingaweb2_modules
+```
+
+## Map Playbooks
+
+Install the map module via Git and set it to show the number of problems in a clustered view instead of the number of markers within that cluster.
+
+```yaml
+- name: Manage map module
+  hosts:
+    - icingaweb2
+
+  vars:
+    icingaweb2_modules:
+      map:
+        config:
+          map:
+            cluster_problem_count: 1
+```
+
+## Map Datatype Playbooks
+
+Install the mapDatatype module via Git.
+
+```yaml
+- name: Manage mapDatatype module
+  hosts:
+    - icingaweb2
+
+  vars:
+    icingaweb2_modules:
+      mapDatatype:
+        package_name: "icinga-mapdatatype"
+        source: git
+        url: "https://github.com/nbuchwitz/icingaweb2-module-mapDatatype.git"
 ```
