@@ -2,9 +2,12 @@
 
 # List of modules known to this role
 _icingaweb2_modules_known_modules:
-  - "grafana"
-  - "map"
-  - "mapDatatype"
+  - name: "grafana"
+    git_url: "https://github.com/Mikesch-mp/icingaweb2-module-grafana.git"
+  - name: "map"
+    git_url: "https://github.com/nbuchwitz/icingaweb2-module-map.git"
+  - name: "mapDatatype"
+    git_url: "https://github.com/nbuchwitz/icingaweb2-module-mapDatatype.git"
 
 _icingaweb2_modules_grafana_server_user: "grafana"
 _icingaweb2_modules_grafana_server_group: "grafana"
