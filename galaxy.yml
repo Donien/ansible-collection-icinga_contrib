@@ -24,6 +24,8 @@ build_ignore:
   - .gitignore
   - .ansible-lint
   - .yamllint
+  - CHANGELOG.rst
+  - changelogs
   - molecule
   - testing-requirements.txt
   - tests
