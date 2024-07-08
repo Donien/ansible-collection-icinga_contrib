@@ -4,13 +4,13 @@
   when:
     - icingaweb2_modules.grafana.config.grafana is defined
     - icingaweb2_modules.grafana.import_dashboards | default(false)
-  ansible.builtin.include_tasks: "{{ role_path }}/tasks/configure_grafana_dashboards.yml"
+  ansible.builtin.include_tasks: "{{ role_path }}/tasks/grafana/configure_grafana_dashboards.yml"
 
 - name: Configure graphs.ini
   when:
     - icingaweb2_modules.grafana.local_dashboards is defined
     - icingaweb2_modules.grafana.import_graphs_ini | default(false)
-  ansible.builtin.include_tasks: "{{ role_path }}/tasks/configure_graphs_ini.yml"
+  ansible.builtin.include_tasks: "{{ role_path }}/tasks/grafana/configure_graphs_ini.yml"
 
 - name: Check if folder uid can be fetched
   when:

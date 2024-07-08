@@ -71,5 +71,5 @@
     loop_var: _current_module
   vars:
     _module: "{{ icingaweb2_modules[_current_module.key] }}"
-    _module_configure_tasks: "{{ lookup('ansible.builtin.first_found', role_path + '/tasks/configure_' + _current_module.key + '.yml', skip=True) | default(role_path + '/tasks/configure_default.yml', true) }}"
+    _module_configure_tasks: "{{ lookup('ansible.builtin.first_found', role_path + '/tasks/' + _current_module.key + '/configure_' + _current_module.key + '.yml', skip=True) | default(role_path + '/tasks/configure_default.yml', true) }}"
   ansible.builtin.include_tasks: "{{ _module_configure_tasks }}"

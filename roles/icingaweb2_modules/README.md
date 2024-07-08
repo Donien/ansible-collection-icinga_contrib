@@ -37,7 +37,7 @@ Table of contents:
 
 - `icingaweb2_modules`: `dictionary`  
   This variable holds keys for all modules to be managed. Each key is a dictionary itself and holds information regarding that specific module.  
-  Each module might provide a specific set of options to be used. The handling of those options happens within that module's task file (e.g. "*tasks/configure_`module`*").  
+  Each module might provide a specific set of options to be used. The handling of those options happens within that module's task file (e.g. "*tasks/`module`/configure_`module`*").  
   All module keys share a common set of options that handle the installation of the modules.  
   Default: `none`  
   Common options:
