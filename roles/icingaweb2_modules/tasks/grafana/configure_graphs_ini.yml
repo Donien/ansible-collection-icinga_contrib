@@ -16,5 +16,5 @@
 - name: Combine all .ini files into a dictionary
   run_once: true
   loop: "{{ _local_graphs_ini_contents.results }}"
-  set_fact:
+  ansible.builtin.set_fact:
     _all_graphs_ini: "{{ _all_graphs_ini | default({}) | combine(item.content | b64decode | replace('\"', '') | community.general.from_ini) }}"
