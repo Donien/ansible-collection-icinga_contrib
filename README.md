@@ -60,9 +60,9 @@ Since maintaining this repository is work we might reject certain contributions 
 We also need to have a certain level of trust when it comes to third party code, e.g. Icinga Web 2 modules.  
 Decisions are made on a case-by-case basis.
 
-If you want to know whether a certain new feautre would be welcome, feel free to simply ask and start a discussion.
+If you want to know whether a certain new feature would be welcome, feel free to simply ask and start a discussion.
 
-Also, if you want to contribute to this Collection, please follow these general guidelines.
+Also, if you want to contribute to this Collection, please follow these general guidelines:
 
 ### Issues
 
