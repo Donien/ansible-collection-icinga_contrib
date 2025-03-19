@@ -54,6 +54,8 @@ Table of contents:
       The version / tag for Git installation (e.g. `version: "v2.0.2"`)
     - `enabled`: `boolean`  
       If `true`, enables the module. If `false`, disables the module. If not set, does nothing.
+    - `remote_src:` `boolean`
+      Set it to `false` to copy archive module from Ansible controller to target host. Useful when `source` set to `archive`. Defualt `true`.
 
 ## Grafana
 
