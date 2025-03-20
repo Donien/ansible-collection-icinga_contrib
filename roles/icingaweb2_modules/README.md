@@ -55,7 +55,9 @@ Table of contents:
     - `enabled`: `boolean`  
       If `true`, enables the module. If `false`, disables the module. If not set, does nothing.
     - `remote_source:` `boolean`
-      Set it to `false` to copy archive module from Ansible controller to target host. Useful when `source` set to `archive`. Defualt `true`.
+      If set to `false`, the archive is copied from the Ansible controller to the managed node. Only has an effect if `source` is set to `archive`.  
+      This is useful when the managed node cannot freely access the given URL, e.g. no access to the internet.  
+      Default: `true`
 
 ## Grafana
 
