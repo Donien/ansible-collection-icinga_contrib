@@ -1,5 +1,22 @@
 ---
 
+- name: Assertions
+  ansible.builtin.assert:
+    that:
+      # Source must be defined
+      - _module.source is defined
+      # When source=="package", package_name must be defined
+      - (_module.source != "package") or (_module.package_name is defined)
+      # When source=="archive", url must be defined
+      - (_module.source != "archive") or (_module.url is defined)
+      # When source=="git", either url must be defined or a default must exist
+      - (_module.source != "git") or
+        (
+          (_module.url is defined)
+          or
+          (_icingaweb2_contrib_modules_known_modules | selectattr('name', 'eq', _module.name) | map(attribute='git_url') | length > 0)
+        )
+
 - name: Package
   block:
     - name: Get list of installed packages
@@ -9,24 +26,26 @@
       become: true
       when:
         - _module.source | lower == "package"
-        - ansible_facts.packages[_module.package_name | default(_module_name)] is not defined
+        - ansible_facts.packages[_module.package_name] is not defined
       ansible.builtin.file:
         state: absent
-        path: "{{ icingaweb2_modules_path }}/{{ _module_name }}"
+        path: "{{ icingaweb2_contrib_modules_path }}/{{ _module.name }}"
 
     - name: Install from package
       become: true
       when: _module.source | lower == "package"
       ansible.builtin.package:
         state: present
-        name: "{{ _module.package_name | default(_module_name) }}"
+        name: "{{ _module.package_name }}"
 
     - name: Remove package
       become: true
-      when: _module.source | lower != "package"
+      when:
+        - _module.source | lower != "package"
+        - _module.package_name is defined
       ansible.builtin.package:
         state: absent
-        name: "{{ _module.package_name | default(_module_name) }}"
+        name: "{{ _module.package_name }}"
 
 - name: Git
   block:
@@ -34,22 +53,22 @@
       become: true
       when: _module.source | lower == "git"
       ansible.builtin.git:
-        repo: "{{ _module.url | default((_icingaweb2_modules_known_modules | selectattr('name', 'eq', _current_module.key) | first).git_url) }}"
-        dest: "{{ icingaweb2_modules_path }}/{{ _module_name }}"
+        repo: "{{ _module.url | default((_icingaweb2_contrib_modules_known_modules | selectattr('name', 'eq', _module.name) | first).git_url) }}"
+        dest: "{{ icingaweb2_contrib_modules_path }}/{{ _module.name }}"
         version: "{{ _module.version | default(omit) }}"
   rescue:
     - name: Remove existing directory
       become: true
       ansible.builtin.file:
         state: absent
-        path: "{{ icingaweb2_modules_path }}/{{ _module_name }}"
+        path: "{{ icingaweb2_contrib_modules_path }}/{{ _module.name }}"
 
     - name: Install from git
       become: true
       when: _module.source | lower == "git"
       ansible.builtin.git:
-        repo: "{{ _module.url | default((_icingaweb2_modules_known_modules | selectattr('name', 'eq', _current_module.key) | first).git_url) }}"
-        dest: "{{ icingaweb2_modules_path }}/{{ _module_name }}"
+        repo: "{{ _module.url | default((_icingaweb2_contrib_modules_known_modules | selectattr('name', 'eq', _current_module.key) | first).git_url) }}"
+        dest: "{{ icingaweb2_contrib_modules_path }}/{{ _module.name }}"
         version: "{{ _module.version | default(omit) }}"
 
 - name: Archive
@@ -59,17 +78,17 @@
       when: _module.source | lower == "archive"
       ansible.builtin.file:
         state: directory
-        path: "{{ icingaweb2_modules_path }}/{{ _module_name }}"
+        path: "{{ icingaweb2_contrib_modules_path }}/{{ _module.name }}"
         owner: "root"
         group: "root"
-        mode: "0766"
+        mode: "0755"
 
     - name: Install from tar ball
       become: true
       when: _module.source | lower == "archive"
       ansible.builtin.unarchive:
         src: "{{ _module.url }}"
-        dest: "{{ icingaweb2_modules_path }}/{{ _module_name }}"
+        dest: "{{ icingaweb2_contrib_modules_path }}/{{ _module.name }}"
         remote_src: "{{ _module.remote_source | default(true) }}"
         extra_opts:
           - "--strip-components=1"

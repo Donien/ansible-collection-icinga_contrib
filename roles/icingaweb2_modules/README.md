@@ -33,11 +33,11 @@ Table of contents:
 
 ## General
 
-- `icingaweb2_modules_config_path`: `string`  
+- `icingaweb2_contrib_modules_config_path`: `string`  
   The path where your Icinga Web 2 configuration is stored.  
   Default: `/etc/icingaweb2`
 
-- `icingaweb2_modules_path`: `string`  
+- `icingaweb2_contrib_modules_path`: `string`  
   The path where your Icinga Web 2 modules are located.  
   Default: `/usr/share/icingaweb2/modules`
 
@@ -95,10 +95,10 @@ Table of contents:
     Manages *graphs.ini* to configure the module. Its keys are equal to the modules [graphs file](https://github.com/NETWAYS/icingaweb2-module-grafana/blob/master/doc/04-graph-configuration.md#options), though not necessarily complete yet.  
     Here you can set specialized dashboards for specific Icinga Services or CheckCommands.  
     For possible default values have look at [templates/grafana/graphs.ini.j2](templates/grafana/graphs.ini.j2).
-- `icingaweb2_modules_grafana_server_config_path`: `string`  
+- `icingaweb2_contrib_modules_grafana_server_config_path`: `string`  
   The path where your Grafana server's configuration is located.  
   Default: `/etc/grafana`
-- `icingaweb2_modules_grafana_server_dashboard_path`: `string`  
+- `icingaweb2_contrib_modules_grafana_server_dashboard_path`: `string`  
   The path where imported dashboards should be deployed on your Grafana server.  
   Default: `/var/lib/grafana/dashboards/icingaweb2-grafana`
 

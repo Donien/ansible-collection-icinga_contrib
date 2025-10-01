@@ -15,61 +15,62 @@
 
 - name: Install Icinga Web 2 Module
   when:
-    - icingaweb2_modules is defined
-    - _current_module.key in (_icingaweb2_modules_known_modules | map(attribute='name'))
-  loop: "{{ icingaweb2_modules | dict2items }}"
+    - icingaweb2_contrib_modules is defined
+    #- _current_module.name in (_icingaweb2_contrib_modules_known_modules | map(attribute='name'))
+  loop: "{{ icingaweb2_contrib_modules }}"
   loop_control:
     loop_var: _current_module
   vars:
-    _module_name: "{{ _current_module.key }}"
-    _module: "{{ icingaweb2_modules[_current_module.key] }}"
+    _module_name: "{{ _current_module.name }}"
+    _module: "{{ _current_module }}"
   ansible.builtin.include_tasks: "{{ role_path }}/tasks/install_module.yml"
 
 - name: Enable/Disable module
   become: true
   when:
-    - icingaweb2_modules is defined
-    - _current_module.key in (_icingaweb2_modules_known_modules | map(attribute='name'))
+    - icingaweb2_contrib_modules is defined
     - _enabled != omit
-  loop: "{{ icingaweb2_modules | dict2items }}"
+  loop: "{{ icingaweb2_contrib_modules }}"
   loop_control:
     loop_var: _current_module
   vars:
-    _enabled: "{{ _current_module.value.enabled | default(omit) }}"
-    _symlink_src: "{{ icingaweb2_modules_path }}/{{ _current_module.key }}"
-    _symlink_dest: "{{ icingaweb2_modules_config_path }}/enabledModules/{{ _current_module.key }}"
+    _enabled: "{{ _current_module.enabled | default(omit) }}"
+    _symlink_src: "{{ icingaweb2_contrib_modules_path }}/{{ _current_module.name }}"
+    _symlink_dest: "{{ icingaweb2_contrib_modules_config_path }}/enabledModules/{{ _current_module.name }}"
   ansible.builtin.file:
     state: "{{ 'link' if _enabled == true else 'absent' }}"
     force: true
-    src: "{{ _symlink_src if _enabled }}"
+    src: "{{ _symlink_src if _enabled else omit }}"
     dest: "{{ _symlink_dest }}"
-    owner: "root"
-    group: "root"
-    mode: "0777"
 
 - name: Make sure configuration directory for module exists
   become: true
   when:
-    - icingaweb2_modules is defined
-    - _current_module.key in (_icingaweb2_modules_known_modules | map(attribute='name'))
-  loop: "{{ icingaweb2_modules | dict2items }}"
+    - icingaweb2_contrib_modules is defined
+  loop: "{{ icingaweb2_contrib_modules }}"
   loop_control:
     loop_var: _current_module
   ansible.builtin.file:
     state: directory
-    path: "{{ icingaweb2_modules_config_path }}/modules/{{ _current_module.key }}"
-    owner: "{{ _icingaweb2_modules_web2_user }}"
-    group: "{{ _icingaweb2_modules_web2_group }}"
+    path: "{{ icingaweb2_contrib_modules_config_path }}/modules/{{ _current_module.name }}"
+    owner: "{{ _icingaweb2_contrib_modules_web2_user }}"
+    group: "{{ _icingaweb2_contrib_modules_web2_group }}"
     mode: "2770"
 
 - name: Configure module
   when:
-    - icingaweb2_modules is defined
-    - _current_module.key in (_icingaweb2_modules_known_modules | map(attribute='name'))
-  loop: "{{ icingaweb2_modules | dict2items }}"
+    - icingaweb2_contrib_modules is defined
+    - _module_options != omit
+  loop: "{{ icingaweb2_contrib_modules }}"
   loop_control:
     loop_var: _current_module
   vars:
-    _module: "{{ icingaweb2_modules[_current_module.key] }}"
-    _module_configure_tasks: "{{ lookup('ansible.builtin.first_found', role_path + '/tasks/' + _current_module.key + '/configure_' + _current_module.key + '.yml', skip=True) | default(role_path + '/tasks/configure_default.yml', true) }}"
+    _module_options: "{{ _current_module.module_options | default(omit) }}"
+    _paths:
+      - "{{ playbook_dir }}/{{ _current_module.name }}"
+      - "{{ playbook_dir }}/{{ _current_module.name }}/tasks"
+      - "{{ role_path }}/tasks/{{ _current_module.name }}"
+    _files:
+      - "configure_{{ _current_module.name }}.yml"
+    _module_configure_tasks: "{{ lookup('ansible.builtin.first_found', paths=_paths, files=_files, skip=true) | default(role_path + '/tasks/configure_default.yml', true) }}"
   ansible.builtin.include_tasks: "{{ _module_configure_tasks }}"

@@ -3,10 +3,10 @@
 - name: Deploy config.ini
   become: true
   vars:
-    _perfdatagraphsinfluxdbv1: "{{ _module.config.perfdatagraphsinfluxdbv1 | default(omit) }}"
+    _perfdatagraphsinfluxdbv1: "{{ _module_options.config.perfdatagraphsinfluxdbv1 | default(omit) }}"
   ansible.builtin.template:
     src: "{{ role_path }}/templates/perfdatagraphsinfluxdbv1/config.ini.j2"
-    dest: "{{ icingaweb2_modules_config_path }}/modules/perfdatagraphsinfluxdbv1/config.ini"
-    owner: "{{ _icingaweb2_modules_web2_user }}"
-    group: "{{ _icingaweb2_modules_web2_group }}"
+    dest: "{{ icingaweb2_contrib_modules_config_path }}/modules/perfdatagraphsinfluxdbv1/config.ini"
+    owner: "{{ _icingaweb2_contrib_modules_web2_user }}"
+    group: "{{ _icingaweb2_contrib_modules_web2_group }}"
     mode: "0660"

@@ -3,7 +3,7 @@
 - name: Find all local .ini files
   run_once: true
   ansible.builtin.set_fact:
-    _local_graphs_ini: "{{ lookup('ansible.builtin.fileglob', icingaweb2_modules.grafana.local_dashboards + '/*.ini', wantlist=true) }}"
+    _local_graphs_ini: "{{ lookup('ansible.builtin.fileglob', _module_options.local_dashboards + '/*.ini', wantlist=true) }}"
 
 - name: Read contents of local graphs.ini files
   run_once: true

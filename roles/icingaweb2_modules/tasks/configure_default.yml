@@ -2,4 +2,4 @@
 
 - name: No configuration tasks
   ansible.builtin.debug:
-    msg: "No configuration tasks available for module '{{ _current_module.key }}'"
+    msg: "No configuration tasks available for module '{{ _current_module.name }}'"

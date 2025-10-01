@@ -1,7 +1,7 @@
 ---
 
 # List of modules known to this role
-_icingaweb2_modules_known_modules:
+_icingaweb2_contrib_modules_known_modules:
   - name: "grafana"
     git_url: "https://github.com/NETWAYS/icingaweb2-module-grafana.git"
   - name: "map"
@@ -16,5 +16,5 @@ _icingaweb2_modules_known_modules:
     git_url: "https://github.com/NETWAYS/icingaweb2-module-perfdatagraphs-influxdbv1"
   - name: "perfdatagraphsgraphite"
     git_url: "https://github.com/NETWAYS/icingaweb2-module-perfdatagraphs-graphite"
-_icingaweb2_modules_grafana_server_user: "grafana"
-_icingaweb2_modules_grafana_server_group: "grafana"
+_icingaweb2_contrib_modules_grafana_server_user: "grafana"
+_icingaweb2_contrib_modules_grafana_server_group: "grafana"

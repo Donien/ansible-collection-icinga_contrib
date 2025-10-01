@@ -9,12 +9,11 @@
 {% set _theme = "light" %}
 {% set _datasource = "influxdb" %}
 {% set _accessmode = "indirectproxy" %}
-{% set _debug = "0" %}
 {% set _authentication = "anon" %}
 {% set _indirectproxyrefresh = "yes" %}
 {% set _height = "280" %}
 {% set _width = "640" %}
-{% set _enablelink = false %}
+{% set _usepublic = false %}
 [grafana]
 host = "{{ _grafana.host | default(_host) }}"
 protocol = "{{ _grafana.protocol | default(_protocol) }}"
@@ -27,13 +26,12 @@ shadows = "{{ _grafana.shadows | default(_shadows) }}"
 theme = "{{ _grafana.theme | default(_theme) }}"
 datasource = "{{ _grafana.datasource | default(_datasource) }}"
 accessmode = "{{ _grafana.accessmode | default(_accessmode) }}"
-debug = "{{ _grafana.debug | default(_debug) }}"
 {% if _grafana.accessmode | default(_accessmode) == "indirectproxy" %}
 authentication = "{{ _grafana.authentication | default(_authentication) }}"
 indirectproxyrefresh = "{{ _grafana.indirectproxyrefresh | default(_indirectproxyrefresh) }}"
 height = "{{ _grafana.height | default(_height) }}"
 width = "{{ _grafana.width | default(_width) }}"
-enableLink = "{{ 'yes' if _grafana.enableLink | default(_enablelink) else 'no' }}"
+usepublic = "{{ 'yes' if _grafana.usepublic | default(_usepublic) else 'no' }}"
 {% endif %}
 {% if _grafana.custvardisable | default(false) %}
 custvardisable = "{{ _grafana.custvardisable }}"
@@ -42,8 +40,11 @@ custvardisable = "{{ _grafana.custvardisable }}"
 custvarconfig = "{{ _grafana.custvarconfig }}"
 {% endif %}
 {% if _grafana_accessmode | default(_accessmode) == "indirectproxy" %}
-{%   if _grafana.proxytimeout | default(false) %}
-proxytimeout = "{{ _grafana.proxytimeout }}"
+{%   if _grafana.timeout | default(false) %}
+timeout = "{{ _grafana.timeout }}"
+{%   endif %}
+{%   if _grafana.enablecache | default(false) %}
+enablecache = "{{ _grafana.enablecache }}"
 {%   endif %}
 {%   if _grafana.authentication | default(_authentication) == "basic" %}
 username = "{{ _grafana.username }}"
