@@ -2,7 +2,7 @@
 
 - name: Configure dashboards
   when:
-    - _module_options.config.grafana is defined
+    - _module_files.config.grafana is defined
     - _module_options.import_dashboards | default(false)
   ansible.builtin.include_tasks: "{{ role_path }}/tasks/grafana/configure_grafana_dashboards.yml"
 
@@ -14,34 +14,34 @@
 
 - name: Check if folder uid can be fetched
   when:
-    - _module_options.config.grafana.host is defined
-    - _module_options.config.grafana.token is defined
+    - _module_files.config.grafana.host is defined
+    - _module_files.config.grafana.apitoken is defined
   vars:
-    _protocol: "{{ _module_options.config.grafana.protocol | default('http') }}"
-    _host: "{{ _module_options.config.grafana.host | default('localhost:3000') }}"
+    _protocol: "{{ _module_files.config.grafana.protocol | default('http') }}"
+    _host: "{{ _module_files.config.grafana.host | default('localhost:3000') }}"
   ansible.builtin.uri:
     url: "{{ _protocol }}://{{ _host }}/api/folders"
     method: GET
     headers:
-      Authorization: "Bearer {{ _module_options.config.grafana.token }}"
+      Authorization: "Bearer {{ _module_files.config.grafana.apitoken }}"
       Content-Type: "application/json"
       Accept: "application/json"
   register: _grafana_folder_search
 
 - name: Check if the dashboard uid can be fetched
   when:
-    - _module_options.config.grafana.host is defined
-    - _module_options.config.grafana.token is defined
+    - _module_files.config.grafana.host is defined
+    - _module_files.config.grafana.apitoken is defined
   vars:
-    _protocol: "{{ _module_options.config.grafana.protocol | default('http') }}"
-    _host: "{{ _module_options.config.grafana.host | default('localhost:3000') }}"
+    _protocol: "{{ _module_files.config.grafana.protocol | default('http') }}"
+    _host: "{{ _module_files.config.grafana.host | default('localhost:3000') }}"
     _folderuid: "{{ (_grafana_folder_search.json | selectattr('title', 'match', icingaweb2_contrib_modules_grafana_dashboard_folder_name) | first).uid | default(none) }}" # yamllint disable-line rule:line-length
-    _default_dashboard_name: "{{ _module_options.config.grafana.defaultdashboard | default('icinga2-default') }}"
+    _default_dashboard_name: "{{ _module_files.config.grafana.defaultdashboard | default('icinga2-default') }}"
   ansible.builtin.uri:
     url: "{{ _protocol }}://{{ _host }}/api/search?{{ 'folderIds=' + _folderuid if _folderuid else 'query=' + _default_dashboard_name | urlencode }}"
     method: GET
     headers:
-      Authorization: "Bearer {{ _module_options.config.grafana.token }}"
+      Authorization: "Bearer {{ _module_files.config.grafana.apitoken }}"
       Content-Type: "application/json"
       Accept: "application/json"
   register: _grafana_api_search
@@ -56,7 +56,7 @@
 - name: Deploy config.ini
   become: true
   vars:
-    _grafana: "{{ _module_options.config.grafana | default(omit) }}"
+    _grafana: "{{ _module_files.config.grafana | default(omit) }}"
   ansible.builtin.template:
     src: "{{ role_path }}/templates/grafana/config.ini.j2"
     dest: "{{ icingaweb2_contrib_modules_config_path }}/modules/grafana/config.ini"
@@ -64,14 +64,14 @@
     group: "{{ _icingaweb2_contrib_modules_web2_group }}"
     mode: "0660"
 
-- name: Deploy graphs.ini
-  become: true
+- name: Extend list entry for grafana module with found local dashboards
   vars:
-    _graphs: "{{ _all_graphs_ini | default({}) | combine(_module_options.config.graphs | default({})) | dict2items }}"
-  when: _graphs
-  ansible.builtin.template:
-    src: "{{ role_path }}/templates/grafana/graphs.ini.j2"
-    dest: "{{ icingaweb2_contrib_modules_config_path }}/modules/grafana/graphs.ini"
-    owner: "{{ _icingaweb2_contrib_modules_web2_user }}"
-    group: "{{ _icingaweb2_contrib_modules_web2_group }}"
-    mode: "0660"
+    _new_graphs_ini:
+      files:
+        graphs: "{{ _all_graphs_ini | default({}) | combine(_module_files.graphs | default({})) }}"
+  ansible.builtin.set_fact:
+    icingaweb2_contrib_modules: "{{
+      icingaweb2_contrib_modules[:_current_module_index] +
+      [icingaweb2_contrib_modules[_current_module_index] | combine(_new_graphs_ini)] +
+      (icingaweb2_contrib_modules[_current_module_index+1:] if icingaweb2_contrib_modules | length > _current_module_index + 1 else [])
+    }}"

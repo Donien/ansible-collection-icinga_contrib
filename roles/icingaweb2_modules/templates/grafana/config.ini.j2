@@ -51,6 +51,6 @@ username = "{{ _grafana.username }}"
 password = "{{ _grafana.password }}"
 {%   endif %}
 {%   if _grafana.authentication | default(_authentication) == "token" %}
-apitoken = "{{ _grafana.token }}"
+apitoken = "{{ _grafana.apitoken }}"
 {%   endif %}
 {% endif %}

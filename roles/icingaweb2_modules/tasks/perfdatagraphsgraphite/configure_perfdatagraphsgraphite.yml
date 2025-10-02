@@ -3,7 +3,7 @@
 - name: Deploy config.ini
   become: true
   vars:
-    _perfdatagraphsgraphite: "{{ _module_options.config.perfdatagraphsgraphite | default(omit) }}"
+    _perfdatagraphsgraphite: "{{ _module_files.config.perfdatagraphsgraphite | default(omit) }}"
   ansible.builtin.template:
     src: "{{ role_path }}/templates/perfdatagraphsgraphite/config.ini.j2"
     dest: "{{ icingaweb2_contrib_modules_config_path }}/modules/perfdatagraphsgraphite/config.ini"

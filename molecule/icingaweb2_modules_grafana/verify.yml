@@ -17,12 +17,11 @@
       theme = "light"
       datasource = "influxdb"
       accessmode = "indirectproxy"
-      debug = "0"
       authentication = "basic"
       indirectproxyrefresh = "yes"
       height = "280"
       width = "640"
-      enableLink = "yes"
+      usepublic = "yes"
       username = "someuser"
       password = "12345678"
     expected_graphs: |

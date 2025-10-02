@@ -40,7 +40,7 @@
 
 - name: Make sure dashboard path exists on Grafana server
   become: true
-  delegate_to: "{{ _module_options.grafana_host | default(_module_options.config.grafana.host | split(':') | first) }}"
+  delegate_to: "{{ _module_options.grafana_host | default(_module_files.config.grafana.host | split(':') | first) }}"
   ansible.builtin.file:
     state: directory
     path: "{{ icingaweb2_contrib_modules_grafana_server_dashboard_path }}"
@@ -50,7 +50,7 @@
 
 - name: Find all existing dashboards in provisioning directory
   become: true
-  delegate_to: "{{ _module_options.grafana_host | default(_module_options.config.grafana.host | split(':') | first) }}"
+  delegate_to: "{{ _module_options.grafana_host | default(_module_files.config.grafana.host | split(':') | first) }}"
   ansible.builtin.find:
     paths: "{{ icingaweb2_contrib_modules_grafana_server_dashboard_path }}"
     file_type: file
@@ -60,7 +60,7 @@
 
 - name: Remove non requested dashboards
   become: true
-  delegate_to: "{{ _module_options.grafana_host | default(_module_options.config.grafana.host | split(':') | first) }}"
+  delegate_to: "{{ _module_options.grafana_host | default(_module_files.config.grafana.host | split(':') | first) }}"
   loop: "{{ _provision_dir_dashboards.files | map(attribute='path') }}"
   when: (item | basename | splitext | first) not in (_all_dashboards | dict2items | map(attribute='key'))
   ansible.builtin.file:
@@ -69,7 +69,7 @@
 
 - name: Deploy dashboards on Grafana server
   become: true
-  delegate_to: "{{ _module_options.grafana_host | default(_module_options.config.grafana.host | split(':') | first) }}"
+  delegate_to: "{{ _module_options.grafana_host | default(_module_files.config.grafana.host | split(':') | first) }}"
   loop: "{{ _all_dashboards | dict2items }}"
   ansible.builtin.copy:
     dest: "{{ icingaweb2_contrib_modules_grafana_server_dashboard_path }}/{{ item.key }}.json"
@@ -80,7 +80,7 @@
 
 - name: Set up provisioning
   become: true
-  delegate_to: "{{ _module_options.grafana_host | default(_module_options.config.grafana.host | split(':') | first) }}"
+  delegate_to: "{{ _module_options.grafana_host | default(_module_files.config.grafana.host | split(':') | first) }}"
   ansible.builtin.template:
     src: "{{ role_path }}/templates/grafana/grafana_server_provision.yaml.j2"
     dest: "{{ icingaweb2_contrib_modules_grafana_server_config_path }}/provisioning/dashboards/icingaweb2-grafana.yaml"
@@ -91,15 +91,15 @@
 
 - name: Restart Grafana # noqa: no-handler
   become: true
-  delegate_to: "{{ _module_options.grafana_host | default(_module_options.config.grafana.host | split(':') | first) }}"
+  delegate_to: "{{ _module_options.grafana_host | default(_module_files.config.grafana.host | split(':') | first) }}"
   when: _provisioning_file.changed
   ansible.builtin.service:
     state: restarted
     name: "grafana-server.service"
 
 - name: Wait for Grafana to be back up
-  delegate_to: "{{ _module_options.grafana_host | default(_module_options.config.grafana.host | split(':') | first) }}"
+  delegate_to: "{{ _module_options.grafana_host | default(_module_files.config.grafana.host | split(':') | first) }}"
   ansible.builtin.wait_for:
     state: started
     timeout: 300
-    port: "{{ _module_options.config.grafana.host | split(':') | last | default('3000') }}"
+    port: "{{ _module_files.config.grafana.host | split(':') | last | default('3000') }}"

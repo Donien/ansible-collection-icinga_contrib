@@ -1,0 +1,15 @@
+---
+
+- name: Deploy config file
+  become: true
+  loop: "{{ _module_files | dict2items }}"
+  loop_control:
+    loop_var: _current_file
+  vars:
+    _i2_config_hash: "{{ _current_file.value }}"
+  ansible.builtin.template:
+    src: "{{ role_path }}/templates/modules_config.ini.j2"
+    dest: "{{ icingaweb2_contrib_modules_config_path }}/modules/{{ _module_name }}/{{ _current_file.key }}.ini"
+    owner: "{{ _icingaweb2_contrib_modules_web2_user }}"
+    group: "{{ _icingaweb2_contrib_modules_web2_group }}"
+    mode: "0660"

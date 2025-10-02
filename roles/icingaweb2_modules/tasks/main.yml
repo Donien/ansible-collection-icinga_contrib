@@ -64,8 +64,10 @@
   loop: "{{ icingaweb2_contrib_modules }}"
   loop_control:
     loop_var: _current_module
+    index_var: _current_module_index
   vars:
     _module_options: "{{ _current_module.module_options | default(omit) }}"
+    _module_files: "{{ _current_module.files | default(omit) }}"
     _paths:
       - "{{ playbook_dir }}/{{ _current_module.name }}"
       - "{{ playbook_dir }}/{{ _current_module.name }}/tasks"
@@ -74,3 +76,15 @@
       - "configure_{{ _current_module.name }}.yml"
     _module_configure_tasks: "{{ lookup('ansible.builtin.first_found', paths=_paths, files=_files, skip=true) | default(role_path + '/tasks/configure_default.yml', true) }}"
   ansible.builtin.include_tasks: "{{ _module_configure_tasks }}"
+
+- name: Deploy module configuration files
+  when:
+    - icingaweb2_contrib_modules is defined
+    - _module_files != omit
+  loop: "{{ icingaweb2_contrib_modules }}"
+  loop_control:
+    loop_var: _current_module
+  vars:
+    _module_name: "{{ _current_module.name }}"
+    _module_files: "{{ _current_module.files | default(omit) }}"
+  ansible.builtin.include_tasks: "deploy_config_files.yml"
